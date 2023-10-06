@@ -48,7 +48,7 @@ def Ex4(vec: list):
     harmonic_mean = len(vec[:n]) / reciprocal_sum
     return harmonic_mean
 def matrix_multiplicathion():
-    n = 17 * (250)
+    n = 17 * (100)
     matrix1 = np.random.randint(1, 17, size=(n, n))
     matrix2 = np.random.randint(1, 17, size=(n, n))
     return matrix1[:n].dot(matrix2[:n])
@@ -129,7 +129,7 @@ plt.show()
 
 ```python
 N = 17
-count = range(1, 250 * N, 10 * N)
+count = range(1, 100 * N, 10 * N)
 func = get_usage_time(ndigits=5)(matrix_multiplicathion)
 items = [i for i in count]
 times = [func() for i in items]
