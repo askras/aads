@@ -317,13 +317,6 @@ Set the length to zero.
  **3** Реализовать индивидуальное задание.
 
 
-#### Получение данных
-
-Необходимо скачать набор данных из репозитория *Center for Machine Learning and Intelligent Systems* (необходим только один текстовый файл с данными измерений): [http://archive.ics.uci.edu/ml/datasets/Iris](http://archive.ics.uci.edu/ml/datasets/Iris).
-
-Файл `iris.data` при просмотре выглядит следующим образом:
-
-
 ### Индивидуальные задания
 
 **Задание 1.** 
