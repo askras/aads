@@ -78,13 +78,80 @@ class LoserError(Exception):
         else:
             return 'YOU LOSER'
 
-class Graph:
-    def init(self):
+class DirectedGraph:
+    def __init__(self):
         self.vertices = {}
 
     def __str__(self):
-        for vertex in self.vertices:
-            print(f"{vertex}: {', '.join(map(str, self.vertices[vertex]))}")
+        if self.is_empty():
+            text = "The graph is empty: None"
+            return text
+        else:
+            for vertex in self.vertices:
+                print(f"{vertex}: {', '.join(map(str, self.vertices[vertex]))}")
+            return ""
+
+    def is_empty(self):
+        if self.vertices == {}:
+            return True
+        else:
+            return False
+
+    def add_vertex(self, vertex):
+        if vertex not in self.vertices:
+            self.vertices[vertex] = []
+        else:
+            raise LoserError()
+
+    def add_edge(self, first, second):
+        if first in self.vertices and second in self.vertices:
+            self.vertices[first].append(second)
+        else:
+            raise LoserError()
+
+    def remove_vertex(self, vertex):
+        if self.is_empty():
+            raise TypeError("empty")
+        if vertex in self.vertices:
+            del self.vertices[vertex]
+            for i in self.vertices:
+                for j in self.vertices[i]:
+                    if vertex == j:
+                        deleted = self.vertices[i].pop(vertex)
+        else:
+            raise LoserError()
+
+    def remove_edge(self, first, second):
+        if self.is_empty():
+            raise TypeError("empty")
+        if first in self.vertices and second in self.vertices:
+            for i in self.vertices[first]:
+                if i == second:
+                    deleted = self.vertices[first].pop(i)
+        else:
+            raise LoserError()
+
+    def clear(self):
+        self.vertices = {}
+
+class UndirectedGraph:
+    def __init__(self):
+        self.vertices = {}
+
+    def __str__(self):
+        if self.is_empty():
+            text = "The graph is empty: None"
+            return text
+        else:
+            for vertex in self.vertices:
+                print(f"{vertex}: {', '.join(map(str, self.vertices[vertex]))}")
+            return ""
+
+    def is_empty(self):
+        if self.vertices == {}:
+            return True
+        else:
+            return False
 
     def add_vertex(self, vertex):
         if vertex not in self.vertices:
@@ -100,163 +167,187 @@ class Graph:
             raise LoserError()
 
     def remove_vertex(self, vertex):
+        if self.is_empty():
+            raise TypeError("empty")
         if vertex in self.vertices:
             del self.vertices[vertex]
             for i in self.vertices:
-                for j in self.verteces[i]:
+                for j in self.vertices[i]:
                     if vertex == j:
-                        deleted = self.verteces[i].pop(vertex)
+                        deleted = self.vertices[i].pop(vertex)
         else:
             raise LoserError()
 
     def remove_edge(self, first, second):
+        if self.is_empty():
+            raise TypeError("empty")
         if first in self.vertices and second in self.vertices:
             for i in self.vertices[first]:
                 if i == second:
-                    deleted = self.verteces[first].pop(i)
+                    deleted = self.vertices[first].pop(i)
             for i in self.vertices[second]:
                 if i == first:
-                    deleted = self.verteces[second].pop(i)
+                    deleted = self.vertices[second].pop(i)
         else:
             raise LoserError()
 
-graph = Graph()
-# Обход (поиск) в глубину
-def dfs_depth(graph, first, visited=[]):
-    if first not in visited:
-        visited.appsecond(first)
-        for next in graph[first]:
-            dfs_depth(graph,next,visited)
-    return visited
-
-
-graph = {
-    'A':['B','S'],
-    'B':['A'],
-    'C':['D','E','F','S'],
-    'D':['C'],
-    'E':['C','H'],
-    'F':['C','G'],
-    'G':['F','S'],
-    'H':['E','G'],
-    'S':['A','C','G']
-}
+    def clear(self):
+        self.vertices = {}
 
 # Взаимодействие с пользователем
-x = input("Добро пожаловать!\nЕсли вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустое ли граф: введите Is Empty\nЕсли вы хотите добавить элементы в граф: введите Add\nЕсли вы хотите удалить элементы из графа: введите Remove\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите закончить: введите Stop\n")
-mytree = Graph()
+graph = input("Добро пожаловать!\nЕсли вы хотите работать с ориентированным графом: введите Directed, если же с неориентированным: введите Undirected\n")
+flag = True
 while True:
-    x = x.lower()
-    match x:
-        case "menu":
-            print("Если вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустое ли граф: введите Is Empty\nЕсли вы хотите добавить элементы в граф: введите Add\nЕсли вы хотите обойти граф: введите Traversal\nЕсли вы хотите узнать распоожение элемента в графе: введите Find Item\nЕсли вы хотите удалить элементы из графа: введите Remove\nЕсли вы хотите узнать глубину графа: введите Depth\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите найти произведение элементов всех четных уровней: введите Product Even Levels\nЕсли вы хотите закончить: введите Stop\n")
-        case "show":
-            print(mytree)
-        case "is empty":
-            if mytree.is_empty(mytree.root):
-                print("Граф пустое")
-            else:
-                print("Граф не пустое")
-        case "add":
-            message = input("Если вы хотите линейно заполнить граф: введите Fill, если же добавить один элемент: введите Add\n")
-            if not message.isalpha():
-                print("YOU LOSER")
-                print("Надо было ввести команду :З")
-            else:
-                if message == "fill":
-                    length = input("Введите количество элементов которое хотите добавить: ")
-                    if not length.isdigit():
-                        print("YOU LOSER")
-                        print("Надо было ввести число :З")
+    if flag == False:
+        break
+    if graph.lower() == "directed":
+        mygraph = DirectedGraph()
+        print("Вы создали ориентированный граф")
+        x = input("Добро пожаловать!\nЕсли вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустой ли граф: введите Is Empty\nЕсли вы хотите добавить вершину в граф: введите Add Vertex\nЕсли вы хотите добавить ребро в граф: введите Add Edge\nЕсли вы хотите удалить вершину из графа: введите Remove Vertex\nЕсли вы хотите удалить ребро из графа: введите Remove Edge\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите закончить: введите Stop\n")
+        while True:
+            x = x.lower()
+            match x:
+                case "menu":
+                    print("Если вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустое ли граф: введите Is Empty\nЕсли вы хотите добавить элементы в граф: введите Add\nЕсли вы хотите обойти граф: введите Traversal\nЕсли вы хотите узнать распоожение элемента в графе: введите Find Item\nЕсли вы хотите удалить элементы из графа: введите Remove\nЕсли вы хотите узнать глубину графа: введите Depth\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите найти произведение элементов всех четных уровней: введите Product Even Levels\nЕсли вы хотите закончить: введите Stop\n")
+                case "show":
+                    print(mygraph)
+                case "is empty":
+                    if mygraph.is_empty():
+                        print("Граф пустой")
                     else:
-                        print("Если вдруг вы устанете заполнять граф и захотите прервать процесс: введите ~I'm LoSeR~")
-                        count_elements = 0
-                        for i in range(0, int(length)):
-
-                            item = input("Введите элемент: ")
-                            if item == "~I'm LoSeR~":
-                                print("Элементы успешно добавились, процесс прерван")
-                                break
-                            else:
-                                try:
-                                    mytree.add(item)
-                                except ValueError:
-                                    print("Такой элемент уже есть в графе")
-                                except TypeError:
-                                    print("В граф можно добавлять только числа")
-                                count_elements += 1
-                        if count_elements == length:
-                            print("Граф успешно заполнено")
-                elif message == "add":
-                    item = input("Введите элемент: ")
-                    flag = True
-                    try:
-                        mytree.add(item)
-                    except ValueError:
-                        flag = False
-                        print("Такой элемент уже есть в графе")
-                    except TypeError:
-                        flag = False
-                        print("В граф можно добавлять только числа")
-                    if flag:
-                        print("Вы добавили элемент", item)
-                else:
-                    print("YOU LOSER")
-                    print("Вы ввели неправильную команду :З")
-        case "remove":
-            message = input("Если вы хотите удалить несколько элементов: введите Remove, если один: введите Pop")
-            if not message.isalpha():
-                print("YOU LOSER")
-                print("Надо было ввести команду :З")
-            else:
-                message = message.lower()
-                if message == "remove":
-                    length = input("Введите количество элементов для удаления: ")
-                    if not length.isdigit():
+                        print("Граф не пустой")
+                case "add vertex":
+                    message = input("Если вы хотите добавить несколько вершин: введите Fill, если же одну: введите Add\n")
+                    if not message.isalpha():
                         print("YOU LOSER")
-                        print("В следующий раз стоит вводить корректное количество элементов для удаления :З")
+                        print("Надо было ввести команду :З")
                     else:
-                        print("Если вдруг вы устанете удалять элементы и захотите прервать процесс: введите ~I'm LoSeR~")
-                        for i in range(0, int(length)):
-                            item = input("Введите элемент, который хотите удалить: ")
-                            if item == "~I'm LoSeR~":
-                                print("Элементы успешно удалены, процесс прерван")
-                                break
+                        if message == "fill":
+                            length = input("Введите количество вершин которое хотите добавить: ")
+                            if not length.isdigit():
+                                print("YOU LOSER")
+                                print("Надо было ввести число :З")
                             else:
-                                try:
-                                    mytree.remove(item)
-                                    print("Вы удалили элемент", item)
-                                except TypeError:
-                                    print("YOU LOSER")
-                                    print("А что вы собрались удалять в пустом графе (｡· v ·｡)?")
-                                except ValueError:
-                                    print("В графе присутствуют только целочисленные элементы")
-                elif message == "pop":
-                    item = input("Введите элемент, который хотите удалить: ")
+                                print("Если вдруг вы устанете заполнять граф и захотите прервать процесс: введите ~I'm LoSeR~")
+                                count_elements = 0
+                                f1 = True
+                                for i in range(0, int(length)):
+                                    if not f1:
+                                        break
+                                    item = input("Введите вершину: ")
+                                    if item == "~I'm LoSeR~":
+                                        while True:
+                                            exit = input("Если вы хотите закончить добавление вершин: введите Break, если добавить вершину ~I'm LoSeR~: введите Add\n")
+                                            if not exit.isalpha():
+                                                print("YOU LOSER")
+                                                print("Надо было ввести команду :З")
+                                                print("Попробуйте еще раз")
+                                            else:
+                                                exit = exit.lower() 
+                                                if exit == "break":
+                                                    print("Вершины успешно добавлены, процесс прерван")
+                                                    f1 = False
+                                                    break
+                                                elif exit == "add":
+                                                    try:
+                                                        mygraph.add_vertex(item)
+                                                    except LoserError as message:
+                                                        print(message)
+                                                        print("Такая вершина уже есть в графе")
+                                                    count_elements += 1
+                                                    break
+                                                else:
+                                                    print("YOU LOSER")
+                                                    print("Надо было ввести команду :З")
+                                                    print("Попробуйте еще раз")
+                                    else:
+                                        try:
+                                            mygraph.add_vertex(item)
+                                        except LoserError as message:
+                                            print(message)
+                                            print("Такой элемент уже есть в графе")
+                                        count_elements += 1
+                                if count_elements == length:
+                                    print("Вершины успешно добалены")
+                        elif message == "add":
+                            item = input("Введите вершину: ")
+                            f2 = True
+                            try:
+                                mygraph.add_vertex(item)
+                            except LoserError as message:
+                                f2 = False
+                                print(message)
+                                print("Такая вершина уже есть в графе")
+                            if f2:
+                                print("Вершина успешно добавлена")
+                        else:
+                            print("YOU LOSER")
+                            print("Вы ввели неправильную команду :З")
+                case "add edge":
+                    first = input("Введите вершину, из которой должно выходить ребро: ")
+                    second = input("Введите вершину, в которую должно входить ребро: ")
                     try:
-                        mytree.remove(item)
-                        print("Вы удалили элемент", item)
+                        mygraph.add_edge(first, second)
+                    except LoserError as message:
+                        print(message)
+                        print("Вы уверены что эти вершины есть в графе (｡· v ·｡)?")
+                case "remove vertex":
+                    item = input("Введите вершину, которую хотите удалить: ")
+                    try:
+                        mygraph.remove_vertex(item)
+                        print("Вы удалили вершину", item)
                     except TypeError:
                         print("YOU LOSER")
                         print("А что вы собрались удалять в пустом графе (｡· v ·｡)?")
-                    except ValueError:
-                        print("В графе присутствуют только целочисленные элементы")
-                else:
+                    except LoserError as message:
+                        print(message)
+                        print("Вы уверены что эти вершины есть в графе (｡· v ·｡)?")
+                case "remove edge":
+                    first = input("Введите вершину, из которой выходит ребро: ")
+                    second = input("Введите вершину, в которую входит ребро: ")
+                    try:
+                        mygraph.remove_edge(first, second)
+                        print("Вы успешно удалили ребро")
+                    except TypeError:
                         print("YOU LOSER")
-                        print("Вы ввели неправильную команду :З")
-        case "depth":
-            print("Глубина графа:", mytree.depth(mytree.root, 0))
-        case "clear":
-            try:
-                mytree.clear()
-                print("Вы очистили граф, его элементы больше не доступны :(")
-            except TypeError:
-                print("YOU LOSER")
-                print("Не стоит пытаться очистить пустое граф :З")
-        case "stop":
-            break
-        case _:
-            print("Научись вводить команды правильно :З")
-    x = input("Введите еще команду: ")
+                        print("А что вы собрались удалять в пустом графе (｡· v ·｡)?")
+                    except LoserError as message:
+                        print(message)
+                        print("Вы уверены что это ребро есть в графе (｡· v ·｡)?")
+                
+                case "clear":
+                    try:
+                        mygraph.clear()
+                        print("Вы очистили граф, его элементы больше не доступны :(")
+                    except TypeError:
+                        print("YOU LOSER")
+                        print("Не стоит пытаться очистить пустое граф :З")
+                case "stop":
+                    flag = False
+                    break
+                case _:
+                    print("Научись вводить команды правильно :З")
+            x = input("Введите еще команду: ")
+    elif graph.lower() == "undirected":
+        mygraph = UndirectedGraph()
+        print("Вы создали неориентированный граф")
+        x = input("Добро пожаловать!\nЕсли вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустой ли граф: введите Is Empty\nЕсли вы хотите добавить вершину в граф: введите Add Vertex\nЕсли вы хотите удалить элементы из графа: введите Remove\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите закончить: введите Stop\n")
+        while True:
+            x = x.lower()
+            match x:
+                case "menu":
+                    print("Если вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустое ли граф: введите Is Empty\nЕсли вы хотите добавить элементы в граф: введите Add\nЕсли вы хотите обойти граф: введите Traversal\nЕсли вы хотите узнать распоожение элемента в графе: введите Find Item\nЕсли вы хотите удалить элементы из графа: введите Remove\nЕсли вы хотите узнать глубину графа: введите Depth\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите найти произведение элементов всех четных уровней: введите Product Even Levels\nЕсли вы хотите закончить: введите Stop\n")
+                case "show":
+                    print(mygraph)
+                case "is empty":
+                    if mygraph.is_empty():
+                        print("Граф пустой")
+                    else:
+                        print("Граф не пустой")
+    else:
+        graph = input("Попробуйте ввести что-то из предложенных вариантов :З\n")
+```
+
+```python
 
 ```
