@@ -681,6 +681,14 @@ class DirectedGraph:
     def clear(self):
         self.vertices = {}
 
+    def copy(self):
+        copy = {}
+        for i in self.vertices:
+            copy[i] = []
+            for j in self.vertices[i]:
+                copy[i].append(j)
+        return copy
+
     def depth_traversal(self, vertex, visited_vertices):
         if self.is_empty():
             raise LoserError()
@@ -689,19 +697,6 @@ class DirectedGraph:
             for i in self.vertices[vertex]:
                 self.depth_traversal(i, visited_vertices)
         return visited_vertices
-
-    # from collections import deque
-    # def bfs_breadth(graph, start):
-    #     visited = set()
-    #     queue = deque([start])
-    #     visited.add(start)
-    #     while queue:
-    #         vertex = queue.popleft()
-    #         for neighbour in graph[vertex]:
-    #             if neighbour not in visited:
-    #                 visited.add(neighbour)
-    #                 queue.append(neighbour)
-    #     return visited
 
     def width_traversal(self, vertex, visited_vertices, queue, result):
         if vertex in visited_vertices:
@@ -712,17 +707,64 @@ class DirectedGraph:
             if not i in visited_vertices:
                 queue.append(i)
         while queue:
-            width_traversal(queue.pop(0))
+            self.width_traversal(queue.pop(0), visited_vertices, queue, result)
         return result
+
+    def eulerian_cycle(self):
+        copy = self.copy()
+        if self.is_empty():
+            raise LoseError
+        vertex = list(self.vertices.keys())[0]
+        result = [vertex]
+        while not self.is_empty():
+            previous_vertex = vertex
+            vertex = self.vertices[vertex][0]
+            self.remove_edge(previous_vertex, vertex)
+            result.append(vertex)
+            if self.vertices[previous_vertex] == []:
+                self.remove_vertex(previous_vertex)
+            if self.vertices[vertex] == []:
+                self.remove_vertex(vertex)
+        self.vertices = copy
+        return result
+
+    def hamiltonian_cycle(self):
+        copy = self.copy()
+        if self.is_empty():
+            raise LoseError
+        vertex = list(self.vertices.keys())[0]
+        result = [vertex]
+        count = 0
+        flag = True
+        while True:
+            if not flag:
+                break
+            for i in self.vertices[vertex]:
+                if i not in result:
+                    vertex = i
+                    result.append(vertex)
+                else:
+                    if self.vertices[vertex] == []:
+                        self.remove_vertex(vertex)
+                        vertex = list(self.vertices.keys())[0]
+                    if i == self.vertices[vertex][-1]:
+                        vertex = i
+                        count += 1
+                        if count > len(list(self.vertices.keys())):
+                            flag = False
+                            break
+        self.vertices = copy
+        return result
+
+    def dijkstra_algorithm(self, vertex):
+        copy = self.copy()
+        shortest_path = {}
+        previous_path = {}
+        del self.vertices[vertex]
         
-    # def width_traversal(self, vertex, visited_vertices):
-    #     if self.is_empty():
-    #         raise LoserError()
-    #     if vertex not in visited_vertices:
-    #         visited_vertices.append(vertex)
-    #         for i in self.vertices[vertex]:
-    #             self.depth_traversal(i, visited_vertices)
-    #     return visited_vertices
+        
+        self.vertices = copy
+        return shortest_path
 
 a = DirectedGraph()
 a.add_vertex(1)
@@ -730,20 +772,69 @@ a.add_vertex(2)
 a.add_vertex(3)
 a.add_vertex(4)
 a.add_vertex(5)
-print(a)
-a.add_edge(1, 2)
-a.add_edge(2, 3)
-a.add_edge(3, 4)
-a.add_edge(4, 5)
 a.add_edge(5, 1)
 a.add_edge(1, 3)
 a.add_edge(4, 2)
 a.add_edge(1, 5)
-# a.add_edge(4, 5)
-# a.add_edge(5, 1)
+a.add_edge(1, 2)
+a.add_edge(2, 3)
+a.add_edge(3, 4)
+a.add_edge(4, 5)
+print("graph a:")
 print(a)
-print(a.depth_traversal(list(a.vertices.keys())[0], []))
-print(a.width_traversal(list(a.vertices.keys())[0], set(), [], []))
+assert a.depth_traversal(list(a.vertices.keys())[0], []) == [1, 3, 4, 2, 5]
+assert a.width_traversal(list(a.vertices.keys())[0], set(), [], []) == [1, 3, 5, 2, 4]
+b = DirectedGraph()
+b.add_vertex(1)
+b.add_vertex(2)
+b.add_vertex(3)
+b.add_vertex(4)
+b.add_vertex(5)
+b.add_edge(1, 2)
+b.add_edge(2, 3)
+b.add_edge(3, 4)
+b.add_edge(4, 5)
+b.add_edge(5, 1)
+b.add_edge(1, 3)
+b.add_edge(3, 1)
+print("graph b:")
+print(b)
+assert b.eulerian_cycle() == [1, 2, 3, 4, 5, 1, 3]
+assert b.hamiltonian_cycle() == [1, 2, 3, 4, 5]
+c = DirectedGraph()
+c.add_vertex(1)
+c.add_vertex(2)
+c.add_vertex(3)
+c.add_vertex(4)
+c.add_vertex(5)
+c.add_edge(1, 2)
+c.add_edge(2, 3)
+c.add_edge(3, 4)
+c.add_edge(1, 3)
+c.add_edge(3, 1)
+print("graph c:")
+print(c)
+assert c.hamiltonian_cycle() == [1, 2, 3, 4]
+d = DirectedGraph()
+d.add_vertex(1)
+d.add_vertex(2)
+d.add_vertex(3)
+d.add_vertex(4)
+d.add_vertex(5)
+d.add_edge(1, 2)
+d.add_edge(2, 3)
+d.add_edge(3, 4)
+d.add_edge(4, 5)
+d.add_edge(5, 1)
+d.add_edge(1, 3)
+d.add_edge(3, 1)
+print("graph d:")
+print(d)
+print(d.dijkstra_algorithm(1))
+```
+
+```python
+
 ```
 
 ```python
