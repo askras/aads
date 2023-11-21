@@ -35,7 +35,144 @@ jupyter:
 <h4> Code Listing: </h4>
 
 ```python
+class LoserError(Exception): #класс ошибок
+    def __init__(self, *args)
+       
+    def __str__(self)
+        
 
+class DirectedGraph:
+    def __init__(self) #инициализация ориентированного графа
+
+    def __str__(self) #вывод графа
+        
+    def is_empty(self) #проверка графа на пустоту
+
+    def add_vertex(self, vertex) #добавление вершины в граф
+
+    def add_edge(self, first, second) #добавление ребра в гараф
+        
+    def remove_vertex(self, vertex) #удаление вершины из графа
+
+    def remove_edge(self, first, second) #удаление ребра из графа
+
+    def clear(self) #очистка графа
+        
+    def copy(self) #вспомогательная функция копирования графа
+        
+    def depth_traversal(self, vertex, visited_vertices) #обход графа в глубину
+        
+    def width_traversal(self, vertex, visited_vertices, queue, result) #обход графа в ширину
+        
+    def eulerian_cycle(self) #поиск эйлерова цикла в графе
+        
+    def hamiltonian_cycle(self) #поиск гамильтонова цикла в графе
+        
+class UndirectedGraph:
+    def __init__(self) #инициализация неориентированного графа
+
+    def __str__(self) #вывод графа
+        
+    def is_empty(self) #проверка графа на пустоту
+
+    def add_vertex(self, vertex) #добавление вершины в граф
+
+    def add_edge(self, first, second) #добавление ребра в гараф
+        
+    def remove_vertex(self, vertex) #удаление вершины из графа
+
+    def remove_edge(self, first, second) #удаление ребра из графа
+
+    def clear(self) #очистка графа
+        
+    def copy(self) #вспомогательная функция копирования графа
+        
+    def depth_traversal(self, vertex, visited_vertices) #обход графа в глубину
+        
+    def width_traversal(self, vertex, visited_vertices, queue, result) #обход графа в ширину
+        
+    def eulerian_cycle(self) #поиск эйлерова цикла в графе
+        
+    def hamiltonian_cycle(self) #поиск гамильтонова цикла в графе
+    
+# Взаимодействие с пользователем
+graph = input(...)
+flag = True
+while True:
+    if flag == False:
+        break
+    if graph.lower() == "directed":
+        mygraph = DirectedGraph()
+        x = input(...)
+        while True:
+            x = x.lower()
+            match x:
+                case "menu":
+                    ...
+                case "show":
+                    ...
+                case "is empty":
+                    ...
+                case "add vertex":
+                    ...
+                case "add edge":
+                    ...
+                case "remove vertex":
+                    ...
+                case "remove edge":
+                    ...
+                case "clear":
+                    ...
+                case "depth traversal":
+                    ...
+                case "width traversal":
+                    ...
+                case "eulerian cycle":
+                    ...
+                case "hamiltonian cycle":
+                    ...
+                case "stop":
+                    ...
+                case _:
+                    ...
+            x = input(...)
+    elif graph.lower() == "undirected":
+        mygraph = UndirectedGraph()
+        x = input(...)
+        while True:
+            x = x.lower()
+            match x:
+                case "menu":
+                    ...
+                case "show":
+                    ...
+                case "is empty":
+                    ...
+                case "add vertex":
+                    ...
+                case "add edge":
+                    ...
+                case "remove vertex":
+                    ...
+                case "remove edge":
+                    ...
+                case "clear":
+                    ...
+                case "depth traversal":
+                    ...
+                case "width traversal":
+                    ...
+                case "eulerian cycle":
+                    ...
+                case "hamiltonian cycle":
+                    ...
+                case "stop":
+                    ...
+                case _:
+                    ...
+            x = input(...)
+    else:
+        graph = input(...)
 ```
 <br>
 <h4> Выводы </h4>
@@ -132,6 +269,14 @@ class DirectedGraph:
     def clear(self):
         self.vertices = {}
 
+    def copy(self):
+        copy = {}
+        for i in self.vertices:
+            copy[i] = []
+            for j in self.vertices[i]:
+                copy[i].append(j)
+        return copy
+
     def depth_traversal(self, vertex, visited_vertices):
         if self.is_empty():
             raise LoserError()
@@ -141,25 +286,63 @@ class DirectedGraph:
                 self.depth_traversal(i, visited_vertices)
         return visited_vertices
 
-    # from collections import deque
-    def width_traversal(self, vertex, visited_vertices):
+    def width_traversal(self, vertex, visited_vertices, queue, result):
+        if vertex in visited_vertices:
+            return result
+        visited_vertices.add(vertex)
+        result.append(vertex)
+        for i in self.vertices[vertex]:
+            if not i in visited_vertices:
+                queue.append(i)
+        while queue:
+            self.width_traversal(queue.pop(0), visited_vertices, queue, result)
+        return result
+
+    def eulerian_cycle(self):
+        copy = self.copy()
         if self.is_empty():
-            raise LoserError()
-        if vertex not in visited_vertices:
-            visited_vertices.append(vertex)
+            raise LoseError
+        vertex = list(self.vertices.keys())[0]
+        result = [vertex]
+        while not self.is_empty():
+            previous_vertex = vertex
+            vertex = self.vertices[vertex][0]
+            self.remove_edge(previous_vertex, vertex)
+            result.append(vertex)
+            if self.vertices[previous_vertex] == []:
+                self.remove_vertex(previous_vertex)
+            if self.vertices[vertex] == []:
+                self.remove_vertex(vertex)
+        self.vertices = copy
+        return result
+
+    def hamiltonian_cycle(self):
+        copy = self.copy()
+        if self.is_empty():
+            raise LoseError
+        vertex = list(self.vertices.keys())[0]
+        result = [vertex]
+        count = 0
+        flag = True
+        while True:
+            if not flag:
+                break
             for i in self.vertices[vertex]:
-                self.depth_traversal(i, visited_vertices)
-        return visited_vertices
-        # visited = set()
-        # queue = deque([start])
-        # visited.add(start)
-        # while queue:
-        #     vertex = queue.popleft()
-        #     for neighbour in graph[vertex]:
-        #         if neighbour not in visited:
-        #             visited.add(neighbour)
-        #             queue.append(neighbour)
-        # return visited
+                if i not in result:
+                    vertex = i
+                    result.append(vertex)
+                else:
+                    if self.vertices[vertex] == []:
+                        self.remove_vertex(vertex)
+                        vertex = list(self.vertices.keys())[0]
+                    if i == self.vertices[vertex][-1]:
+                        vertex = i
+                        count += 1
+                        if count > len(list(self.vertices.keys())):
+                            flag = False
+                            break
+        self.vertices = copy
+        return result
 
 class UndirectedGraph:
     def __init__(self):
@@ -221,6 +404,14 @@ class UndirectedGraph:
     def clear(self):
         self.vertices = {}
 
+    def copy(self):
+        copy = {}
+        for i in self.vertices:
+            copy[i] = []
+            for j in self.vertices[i]:
+                copy[i].append(j)
+        return copy
+
     def depth_traversal(self, vertex, visited_vertices):
         if self.is_empty():
             raise LoserError()
@@ -230,6 +421,63 @@ class UndirectedGraph:
                 self.depth_traversal(i, visited_vertices)
         return visited_vertices
 
+    def width_traversal(self, vertex, visited_vertices, queue, result):
+        if vertex in visited_vertices:
+            return result
+        visited_vertices.add(vertex)
+        result.append(vertex)
+        for i in self.vertices[vertex]:
+            if not i in visited_vertices:
+                queue.append(i)
+        while queue:
+            self.width_traversal(queue.pop(0), visited_vertices, queue, result)
+        return result
+
+    def eulerian_cycle(self):
+        copy = self.copy()
+        if self.is_empty():
+            raise LoseError
+        vertex = list(self.vertices.keys())[0]
+        result = [vertex]
+        while not self.is_empty():
+            previous_vertex = vertex
+            vertex = self.vertices[vertex][0]
+            self.remove_edge(previous_vertex, vertex)
+            result.append(vertex)
+            if self.vertices[previous_vertex] == []:
+                self.remove_vertex(previous_vertex)
+            if self.vertices[vertex] == []:
+                self.remove_vertex(vertex)
+        self.vertices = copy
+        return result
+
+    def hamiltonian_cycle(self):
+        copy = self.copy()
+        if self.is_empty():
+            raise LoseError
+        vertex = list(self.vertices.keys())[0]
+        result = [vertex]
+        count = 0
+        flag = True
+        while True:
+            if not flag:
+                break
+            for i in self.vertices[vertex]:
+                if i not in result:
+                    vertex = i
+                    result.append(vertex)
+                else:
+                    if self.vertices[vertex] == []:
+                        self.remove_vertex(vertex)
+                        vertex = list(self.vertices.keys())[0]
+                    if i == self.vertices[vertex][-1]:
+                        vertex = i
+                        count += 1
+                        if count > len(list(self.vertices.keys())):
+                            flag = False
+                            break
+        self.vertices = copy
+        return result
 
 # Взаимодействие с пользователем
 graph = input("Добро пожаловать!\nЕсли вы хотите работать с ориентированным графом: введите Directed, если же с неориентированным: введите Undirected\n")
@@ -240,12 +488,12 @@ while True:
     if graph.lower() == "directed":
         mygraph = DirectedGraph()
         print("Вы создали ориентированный граф")
-        x = input("Добро пожаловать!\nЕсли вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустой ли граф: введите Is Empty\nЕсли вы хотите добавить вершину в граф: введите Add Vertex\nЕсли вы хотите добавить ребро в граф: введите Add Edge\nЕсли вы хотите удалить вершину из графа: введите Remove Vertex\nЕсли вы хотите удалить ребро из графа: введите Remove Edge\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите закончить: введите Stop\n")
+        x = input("Добро пожаловать!\nЕсли вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустой ли граф: введите Is Empty\nЕсли вы хотите добавить вершину в граф: введите Add Vertex\nЕсли вы хотите добавить ребро в граф: введите Add Edge\nЕсли вы хотите удалить вершину из графа: введите Remove Vertex\nЕсли вы хотите удалить ребро из графа: введите Remove Edge\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите посмотреть обход графа в глубину: введите Depth Traversal\nЕсли вы хотите посмотреть обход графа в ширину: введите Width Traversal\nЕсли вы хотите посмотреть эйлеров цикл в графе: введите Eulerian Cycle\nЕсли вы хотите посмотреть гамильтонов цикл в графе: введите Hamiltonian Cycle\nЕсли вы хотите закончить: введите Stop\n")
         while True:
             x = x.lower()
             match x:
                 case "menu":
-                    print("Если вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустое ли граф: введите Is Empty\nЕсли вы хотите добавить элементы в граф: введите Add\nЕсли вы хотите обойти граф: введите Traversal\nЕсли вы хотите узнать распоожение элемента в графе: введите Find Item\nЕсли вы хотите удалить элементы из графа: введите Remove\nЕсли вы хотите узнать глубину графа: введите Depth\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите найти произведение элементов всех четных уровней: введите Product Even Levels\nЕсли вы хотите закончить: введите Stop\n")
+                    print("Если вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустой ли граф: введите Is Empty\nЕсли вы хотите добавить вершину в граф: введите Add Vertex\nЕсли вы хотите добавить ребро в граф: введите Add Edge\nЕсли вы хотите удалить вершину из графа: введите Remove Vertex\nЕсли вы хотите удалить ребро из графа: введите Remove Edge\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите посмотреть обход графа в глубину: введите Depth Traversal\nЕсли вы хотите посмотреть обход графа в ширину: введите Width Traversal\nЕсли вы хотите посмотреть эйлеров цикл в графе: введите Eulerian Cycle\nЕсли вы хотите посмотреть гамильтонов цикл в графе: введите Hamiltonian Cycle\nЕсли вы хотите закончить: введите Stop\n")
                 case "show":
                     print(mygraph)
                 case "is empty":
@@ -412,12 +660,6 @@ while True:
                     except LoserError as message:
                         print(message)
                         print("Вы уверены что это ребро есть в графе (｡· v ·｡)?")
-                case "depth traversal":
-                    try:
-                        print(mygraph.depth_traversal(list(mygraph.vertices.keys())[0], []))
-                    except IndexError:
-                        print("YOU LOSER")
-                        print("Граф путой")
                 case "clear":
                     try:
                         mygraph.clear()
@@ -425,6 +667,33 @@ while True:
                     except TypeError:
                         print("YOU LOSER")
                         print("Не стоит пытаться очистить пустой граф :З")
+                case "depth traversal":
+                    try:
+                        print(mygraph.depth_traversal(list(mygraph.vertices.keys())[0], []))
+                    except IndexError:
+                        print("YOU LOSER")
+                        print("Граф пустой")
+                case "width traversal":
+                    try:
+                        print(mygraph.width_traversal(list(mygraph.vertices.keys())[0], set(), [], []))
+                    except IndexError:
+                        print("YOU LOSER")
+                        print("Граф пустой")
+                    except LoserError as message:
+                        print(message)
+                        print("Граф пустой")
+                case "eulerian cycle":
+                    try:
+                        print(mygraph.eulerian_cycle())
+                    except LoserError as message:
+                        print(message)
+                        print("Граф пустой")
+                case "hamiltonian cycle":
+                    try:
+                        print(mygraph.hamiltonian_cycle())
+                    except LoserError as message:
+                        print(message)
+                        print("Граф пустой")
                 case "stop":
                     flag = False
                     break
@@ -434,12 +703,12 @@ while True:
     elif graph.lower() == "undirected":
         mygraph = UndirectedGraph()
         print("Вы создали неориентированный граф")
-        x = input("Добро пожаловать!\nЕсли вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустой ли граф: введите Is Empty\nЕсли вы хотите добавить вершину в граф: введите Add Vertex\nЕсли вы хотите добавить ребро в граф: введите Add Edge\nЕсли вы хотите удалить вершину из графа: введите Remove Vertex\nЕсли вы хотите удалить ребро из графа: введите Remove Edge\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите закончить: введите Stop\n")
+        x = input("Добро пожаловать!\nЕсли вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустой ли граф: введите Is Empty\nЕсли вы хотите добавить вершину в граф: введите Add Vertex\nЕсли вы хотите добавить ребро в граф: введите Add Edge\nЕсли вы хотите удалить вершину из графа: введите Remove Vertex\nЕсли вы хотите удалить ребро из графа: введите Remove Edge\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите посмотреть обход графа в глубину: введите Depth Traversal\nЕсли вы хотите посмотреть обход графа в ширину: введите Width Traversal\nЕсли вы хотите посмотреть эйлеров цикл в графе: введите Eulerian Cycle\nЕсли вы хотите посмотреть гамильтонов цикл в графе: введите Hamiltonian Cycle\nЕсли вы хотите закончить: введите Stop\n")
         while True:
             x = x.lower()
             match x:
                 case "menu":
-                    print("Если вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустое ли граф: введите Is Empty\nЕсли вы хотите добавить элементы в граф: введите Add\nЕсли вы хотите обойти граф: введите Traversal\nЕсли вы хотите узнать распоожение элемента в графе: введите Find Item\nЕсли вы хотите удалить элементы из графа: введите Remove\nЕсли вы хотите узнать глубину графа: введите Depth\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите найти произведение элементов всех четных уровней: введите Product Even Levels\nЕсли вы хотите закончить: введите Stop\n")
+                    print("Если вы хотите вывести набор команд: введите Menu\nЕсли вы хотите посмотреть граф: введите Show\nЕсли вы хотите проверить пустой ли граф: введите Is Empty\nЕсли вы хотите добавить вершину в граф: введите Add Vertex\nЕсли вы хотите добавить ребро в граф: введите Add Edge\nЕсли вы хотите удалить вершину из графа: введите Remove Vertex\nЕсли вы хотите удалить ребро из графа: введите Remove Edge\nЕсли вы хотите очистить граф: введите Clear\nЕсли вы хотите посмотреть обход графа в глубину: введите Depth Traversal\nЕсли вы хотите посмотреть обход графа в ширину: введите Width Traversal\nЕсли вы хотите посмотреть эйлеров цикл в графе: введите Eulerian Cycle\nЕсли вы хотите посмотреть гамильтонов цикл в графе: введите Hamiltonian Cycle\nЕсли вы хотите закончить: введите Stop\n")
                 case "show":
                     print(mygraph)
                 case "is empty":
@@ -614,6 +883,33 @@ while True:
                     except TypeError:
                         print("YOU LOSER")
                         print("Не стоит пытаться очистить пустой граф :З")
+                case "depth traversal":
+                    try:
+                        print(mygraph.depth_traversal(list(mygraph.vertices.keys())[0], []))
+                    except IndexError:
+                        print("YOU LOSER")
+                        print("Граф пустой")
+                case "width traversal":
+                    try:
+                        print(mygraph.width_traversal(list(mygraph.vertices.keys())[0], set(), [], []))
+                    except IndexError:
+                        print("YOU LOSER")
+                        print("Граф пустой")
+                    except LoserError as message:
+                        print(message)
+                        print("Граф пустой")
+                case "eulerian cycle":
+                    try:
+                        print(mygraph.eulerian_cycle())
+                    except LoserError as message:
+                        print(message)
+                        print("Граф пустой")
+                case "hamiltonian cycle":
+                    try:
+                        print(mygraph.hamiltonian_cycle())
+                    except LoserError as message:
+                        print(message)
+                        print("Граф пустой")
                 case "stop":
                     flag = False
                     break
@@ -756,16 +1052,6 @@ class DirectedGraph:
         self.vertices = copy
         return result
 
-    def dijkstra_algorithm(self, vertex):
-        copy = self.copy()
-        shortest_path = {}
-        previous_path = {}
-        del self.vertices[vertex]
-        
-        
-        self.vertices = copy
-        return shortest_path
-
 a = DirectedGraph()
 a.add_vertex(1)
 a.add_vertex(2)
@@ -782,6 +1068,9 @@ a.add_edge(3, 4)
 a.add_edge(4, 5)
 print("graph a:")
 print(a)
+print("depth", a.depth_traversal(list(a.vertices.keys())[0], []))
+print("width", a.width_traversal(list(a.vertices.keys())[0], set(), [], []))
+print()
 assert a.depth_traversal(list(a.vertices.keys())[0], []) == [1, 3, 4, 2, 5]
 assert a.width_traversal(list(a.vertices.keys())[0], set(), [], []) == [1, 3, 5, 2, 4]
 b = DirectedGraph()
@@ -799,6 +1088,9 @@ b.add_edge(1, 3)
 b.add_edge(3, 1)
 print("graph b:")
 print(b)
+print("eu", b.eulerian_cycle())
+print("ham", b.hamiltonian_cycle())
+print()
 assert b.eulerian_cycle() == [1, 2, 3, 4, 5, 1, 3]
 assert b.hamiltonian_cycle() == [1, 2, 3, 4, 5]
 c = DirectedGraph()
@@ -814,26 +1106,65 @@ c.add_edge(1, 3)
 c.add_edge(3, 1)
 print("graph c:")
 print(c)
+print("ham", c.hamiltonian_cycle())
+print()
 assert c.hamiltonian_cycle() == [1, 2, 3, 4]
-d = DirectedGraph()
-d.add_vertex(1)
-d.add_vertex(2)
-d.add_vertex(3)
-d.add_vertex(4)
-d.add_vertex(5)
-d.add_edge(1, 2)
-d.add_edge(2, 3)
-d.add_edge(3, 4)
-d.add_edge(4, 5)
-d.add_edge(5, 1)
-d.add_edge(1, 3)
-d.add_edge(3, 1)
-print("graph d:")
-print(d)
-print(d.dijkstra_algorithm(1))
-```
 
-```python
+d = {
+    'A': {'B': 1, 'C': 4},
+    'B': {'A': 1, 'C': 2, 'D': 5},
+    'C': {'A': 4, 'B': 2, 'D': 1},
+    'D': {'B': 5, 'C': 1}
+}
+
+import heapq
+def dijkstra_algorithm(graph, v):
+    shortest_path = {vertex: float('inf') for vertex in graph}
+    shortest_path[v] = 0
+    queue = [(0, v)]
+    while queue:
+        current_distance, current_vertex = heapq.heappop(queue)
+        if current_distance > shortest_path[current_vertex]:
+            continue
+        for neighbour, weight in graph[current_vertex].items():
+            distance = current_distance + weight
+            if distance < shortest_path[neighbour]:
+                shortest_path[neighbour] = distance
+                heapq.heappush(queue, (distance, neighbour))
+    return shortest_path
+
+print("алгоритм дейкстры", dijkstra_algorithm(d, 'A'))
+
+def dijkstra_algorithm_two_vertices(graph, v1, v2):
+    return dijkstra_algorithm(graph, v1)[v2]
+
+print("алгоритм дейкстры между двумя вершинами", dijkstra_algorithm_two_vertices(d, 'A', 'D'))
+
+#individuals variant 17
+graph = {
+    1: {2: 1, 3: 2},
+    2: {3: 3, 4: 14},
+    3: {4: 6, 5: 9},
+    4: {5: 4, 6: 10},
+    5: {6: 7, 7: 12},
+    6: {7: 2},
+    7: {}
+}
+assert dijkstra_algorithm_two_vertices(graph, 2, 5) == 12
+print("алгоритм дейкстры между 2 и 5 -", dijkstra_algorithm_two_vertices(graph, 2, 5))
+
+graph = {
+    1: {2: 4, 5: 9, 6: 10},
+    2: {1: 4, 3: 1, 5: 3, 7: 2},
+    3: {2: 1, 4: 1, 6: 1, 8: 7},
+    4: {3: 1, 7: 8, 8: 6},
+    5: {1: 9, 2: 3, 6: 4},
+    6: {1: 10, 3: 1, 5: 4, 7: 1},
+    7: {2: 2, 4: 8, 6: 1, 8: 5},
+    8: {3: 7, 4: 6, 7: 5}
+}
+assert dijkstra_algorithm_two_vertices(graph, 3, 8) == 7
+print("алгоритм дейкстры между 3 и 8 -", dijkstra_algorithm_two_vertices(graph, 3, 8))
 
 ```
 
