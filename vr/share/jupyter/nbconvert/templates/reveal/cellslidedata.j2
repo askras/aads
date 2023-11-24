@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 {%- macro cellslidedata(cell) -%}
     {% if cell.metadata.slideshow | length > 0 -%}
         {% if cell.metadata.slideshow.data | length > 0 -%}
@@ -7,6 +8,16 @@
             {%- endfor -%}
         {%- endif %}
     {%- endif %}
+=======
+{%- macro cellslidedata(cell) -%}
+    {% if cell.metadata.slideshow | length > 0 -%}
+        {% if cell.metadata.slideshow.data | length > 0 -%}
+            {% for key in (cell.metadata.slideshow.data) -%}
+                {{- (' data_' ~ key)|replace("_", "-") -}}="{{- cell.metadata.slideshow.data[key]|escape_html -}}"
+            {%- endfor -%}
+        {%- endif %}
+    {%- endif %}
+>>>>>>> 2778557520b1cc3817310b6adf7a8bdc4eece6bb
 =======
 {%- macro cellslidedata(cell) -%}
     {% if cell.metadata.slideshow | length > 0 -%}
