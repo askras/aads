@@ -1133,11 +1133,13 @@ def dijkstra_algorithm(graph, v):
                 heapq.heappush(queue, (distance, neighbour))
     return shortest_path
 
+print(d)
 print("алгоритм дейкстры", dijkstra_algorithm(d, 'A'))
 
 def dijkstra_algorithm_two_vertices(graph, v1, v2):
     return dijkstra_algorithm(graph, v1)[v2]
 
+assert dijkstra_algorithm_two_vertices(d, 'A', 'D') == 4
 print("алгоритм дейкстры между двумя вершинами", dijkstra_algorithm_two_vertices(d, 'A', 'D'))
 
 #individuals variant 17
