@@ -540,18 +540,7 @@ while True:
                 else:
                         print("YOU LOSER")
                         print("Вы ввели неправильную команду :З")
-        case "find item":
-            value = input("Введите элемент: ")
-            try:
-                result = mytree.find_item(value)
-                print("Элемент", value, "находится в списке по пути:", result)
-            except TypeError:
-                print("Что вы собрались искать в пустом дереве (｡· v ·｡)?")
-            except ValueError:
-                print("В дереве можно искать только целые числа")
-            except Exception:
-                print("YOU LOSER")
-                print("Такого элемента в дереве не нашлось :З")
+        
         case "depth":
             print("Глубина дерева:", mytree.depth(mytree.root, 0))
         case "product even levels":
